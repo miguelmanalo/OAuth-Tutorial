@@ -5,28 +5,24 @@ const fetch = require('node-fetch');
 const queryController = require("../server/controllers/queryController");
 const db = require("../models/queryModels");
 
-
-
 // import the keys file that you add to gitignore
 const keys = require('./keys');
 
 // create serialized user ids
 passport.serializeUser((user, done) => {
   // we want the SQL-created id of the user we query for
-  console.log('serializeUser user.id', user.id)
+  console.log('serializeUser user.id', user.rows[0].id)
   //user.id is being stuffed into the cookie;
-  done(null, user.id)
+  // console.log('req.session.passport.user in SERIAL', req);
+  done(null, user.rows[0].id);
 
 });
 
-passport.deserializeUser((id, done) => {
+passport.deserializeUser(async (id, done) => {
   // we want the SQL-created id of the user we query for
-  console.log('deserializeUser user.id', user.id)
-  const findById = async () => {
-    const user = await db.query('SELECT * FROM "public"."users" WHERE "id" = $1', [id])
-    console.log('our user inside findById is...', user)
-  }
-  findById();
+  console.log('deserializeUser user.id', id)
+  const user = await db.query('SELECT * FROM "public"."users" WHERE "id" = $1', [id])
+  console.log('our user inside deSERIAL is...', user)
   done(null, user)
 });
 
@@ -65,27 +61,25 @@ passport.use(
     
     // console.log('body ln 51', body)
     const checkUser = async () => {
-      const user = await db.query('SELECT id, name FROM "public"."users" WHERE "oauth_data" = $1', [body.googleid])
+      const user = await db.query('SELECT * FROM "public"."users" WHERE "oauth_data" = $1', [body.googleid])
       console.log('user inside', user.rows[0])
       if (user.rows[0] !== undefined) {
         console.log('user is: ', user.rows[0]);
         console.log("starting done function, get user")
-        done(null, user.rows[0]);
+        done(null, user);
     //we'll do something here
       } else {
-        // we do our queury to create a new user
-        fetch(`${keys.baseURL.localH}/newUser`, {
-          headers: { "Content-type": "application/json" },
-          body: JSON.stringify( body ),
-          method: "POST",
-        }).then((res) => {
-          console.log("starting done function create new user")
-          done(null, user.rows[0])
+        // we do our query to create a new user
+        const newUser = await db.query(`INSERT INTO users (name, oauth_data) VALUES ($1, $2) RETURNING *`, [body.usernam, body.googleid]);
+       console.log("This SHOULD be the users info", newUser.rows[0])
+       console.log("this is new user", newUser.rows)
+          // console.log("starting done function create new user")
+          console.log("user.rows[0]", newUser.rows[0])
+          // console.log('res in ps-setup else', res)
+          done(null, newUser)
           // console.log('res', res);
-        })
-      }
-    };
-    
+        }
+      };
     checkUser();
 
   //   fetch(`${keys.baseURL.localH}/getOneUser/:googleid`, (req, res) => {

@@ -25,9 +25,12 @@ router.get('/google', passport.authenticate("google", {
 // we echange this code for profile info
 // cb route for google to redirect to
 router.get("/google/redirect", passport.authenticate('google'), (req, res) => {
-  console.log('res in auth-routes router get', res);
+  console.log('res in auth-routes router get', res.locals);
   // res.send(req.user);
-  res.redirect('/profile')
+  console.log('req.user in auth-routes', req.user.rows[0]);
+  // res.locals.user = req.user
+  // console.log("res.locals.user in auth-routes", res.locals.user)
+  res.redirect('/profile/')
 });
 
 module.exports = router;
