@@ -44,7 +44,7 @@ passport.use(
     // we have to do ocntrol flow somewhere here
     // that checks to see if res.locals.foundOne is empty or is undefined
     // if it is empty, do the Add Fetch instead
-
+    console.log('body', body)
     fetch(`${keys.baseURL.localH}/getOneUser/:googleid`, (req, res) => {
       console.log('inside the fetch in passport-setup')
       if (res.locals.foundOne === '' || res.locals.foundOne === undefined ) {
@@ -62,11 +62,18 @@ passport.use(
     }).then(body => console.log('res body', body))
 
 
-      }
+  }
     })
 
     
    
-    ;
+    // fetch(`${keys.baseURL.localH}/newUser`, {
+    //   headers: { "Content-type": "application/json" },
+    //   body: JSON.stringify( body ),
+    //   method: "POST",
+    // }).then((res) => {
+    //   res.text();
+    //   console.log('res', res);
+    // }).then(body => console.log('res body', body))
   })
 );
