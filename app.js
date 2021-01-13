@@ -1,11 +1,12 @@
 const express = require('express');
-const authRoutes = require('./routes/auth-routes')
+const authRoutes = require('./routes/auth-routes');
 const app = express();
 const path = require("path");
 const bodyParser = require("body-parser");
-const passportSetup = require("./config/passport-setup")
-const keys = require('./config/keys')
+const passportSetup = require("./config/passport-setup");
+const keys = require('./config/keys');
 const queryController = require("./server/controllers/queryController");
+const cookieSession = require('cookie-session');
 
 // handle parsing request body and cookies
 app.use(bodyParser.json());
