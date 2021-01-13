@@ -6,6 +6,7 @@ const queryController = require("../server/controllers/queryController");
 const db = require("../models/queryModels");
 
 
+
 // import the keys file that you add to gitignore
 const keys = require('./keys');
 
@@ -13,6 +14,7 @@ const keys = require('./keys');
 passport.serializeUser((user, done) => {
   // we want the SQL-created id of the user we query for
   console.log('serializeUser user.id', user.id)
+  //user.id is being stuffed into the cookie;
   done(null, user.id)
 
 });

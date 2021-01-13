@@ -10,5 +10,8 @@ module.exports = {
   },
   baseURL: {
     localH: "http://localhost:4444"
+  },
+  session: {
+    cookieKey: 'I-like-turtles'
   }
 };
