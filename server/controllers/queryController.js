@@ -6,7 +6,7 @@ const queryController = {};
 
 // GET request to get all db info for schema_list and fields tables
 queryController.addNewUser = async (req, res, next) => {
-  console.log("we made it")
+  console.log("we made it, addNewUser")
   try {
   // console.log('req in addNewUser', req.body)
   const { googleid, usernam } = req.body;
@@ -36,6 +36,7 @@ queryController.getOneUser = async (req, res, next) => {
     const foundOne = await db.query(text, [googleid]);
     console.log("we found one", foundOne.rows[0]);
     res.locals.foundOne = foundOne.rows[0];
+    console.log("this is our res.locals.foundOne", res.locals.foundOne)
       return next();
   } catch(err) {
     return console.error(err.message);

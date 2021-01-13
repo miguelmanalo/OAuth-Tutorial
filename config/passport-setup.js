@@ -41,12 +41,17 @@ passport.use(
 
     // we want to see if the user exists already
     // if they do exist already console log it
-    fetch(`${keys.baseURL.localH}/getOneUser/:googleid`, (req, res) => {
-      console.log("this worked in passport setup")
-    })
+    // we have to do ocntrol flow somewhere here
+    // that checks to see if res.locals.foundOne is empty or is undefined
+    // if it is empty, do the Add Fetch instead
 
-    
-    // console.log('body before fetch', body)
+    fetch(`${keys.baseURL.localH}/getOneUser/:googleid`, (req, res) => {
+      console.log('inside the fetch in passport-setup')
+      if (res.locals.foundOne === '' || res.locals.foundOne === undefined ) {
+        console.log("we found locals, now do something")
+      }
+      else {
+         // console.log('body before fetch', body)
     fetch(`${keys.baseURL.localH}/newUser`, {
       headers: { "Content-type": "application/json" },
       body: JSON.stringify( body ),
@@ -55,6 +60,13 @@ passport.use(
       res.text();
       console.log('res', res);
     }).then(body => console.log('res body', body))
+
+
+      }
+    })
+
+    
+   
     ;
   })
 );

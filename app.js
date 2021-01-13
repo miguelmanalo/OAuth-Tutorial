@@ -28,8 +28,8 @@ app.post(
 app.get(
   "/getOneUser/:googleid",
   queryController.getOneUser, (req, res, next) => {
-   console.log("fired")
-   
+   console.log("fired in getOneUser app.js")
+   res.sendStatus(200)
   }
 );
 
