@@ -4,7 +4,7 @@ const profileRoutes = require('./routes/profile-routes');
 const app = express();
 const path = require("path");
 const bodyParser = require("body-parser");
-const passport = require('passport')
+const passport = require('passport');
 const passportSetup = require("./config/passport-setup");
 const keys = require('./config/keys');
 const queryController = require("./server/controllers/queryController");
@@ -16,6 +16,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// set up view engine
+app.set('view engine', 'ejs');
+
+// use cookieSeession to make sessions
+// encrypts cookie and makes sure it lives just a day long
+app.use(cookieSession({
+  // one day in milliseconds
+  maxAge: 24 * 60 * 60 * 1000,
+  // hide the secret key in the keys file
+  keys: [keys.session.cookieKey]
+}));
 
 // we want passport to initialize and then use cookies
 // this has to be run early on here in app
@@ -28,18 +39,7 @@ app.use('/auth', authRoutes);
 // use profile routes
 app.use('/profile', profileRoutes);
 
-// set up view engine
-app.set('view engine', 'ejs');
 
-// use cookieSeession to make sessions
-// encrypts cookie and makes sure it lives just a day long
-app.use(cookieSession({
-  // one day in milliseconds
-  maxAge: 24 * 60 * 60 * 1000,
-  // hide the secret key in the keys file
-  keys: [keys.session.cookieKey]
-  
-}));
 
 
 
@@ -64,7 +64,9 @@ app.listen(4444, () => {
 
 // create home route
 app.get('/', (req, res) => {
-  res.render('home');
+  res.render('home', {
+    user: req.user,
+  });
 });
 
 /**
